@@ -14,3 +14,10 @@ def test_helloworld_parsing():
                          stdout=subprocess.PIPE)
     out = p.communicate()[0]
     assert out == "Hello World!\n"
+
+
+def test_rot13_parsing():
+    p = subprocess.Popen(["python", "brainfuck.py", "../rot13.bf", "abcdefghijklmnopqrstuvwxyz"],
+                         stdout=subprocess.PIPE)
+    out = p.communicate()[0]
+    assert out == "nopqrstuvwxyzabcdefghijklm"
