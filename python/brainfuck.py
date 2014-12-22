@@ -48,8 +48,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print "Source file as argument required."
         exit(1)
-    # For now we assume there is no comment in code and the code is
-    # syntactically correct
     source_path = sys.argv[1]
     source = open_and_read(source_path)
     interpret_source(source)
