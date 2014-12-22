@@ -1,5 +1,6 @@
 import sys
 
+
 def interpret_source(source):
     bracket_map = generate_bracket_map(source)
     data_ptr = 0
@@ -18,13 +19,13 @@ def interpret_source(source):
         elif char == "<":
             data_ptr -= 1
         elif char == ".":
-            print heap[data_ptr]
+            sys.stdout.write(chr(heap[data_ptr]))
         elif char == "[":
             if heap[data_ptr] == 0:
                 i = bracket_map[i]
         elif char == "]":
             if heap[data_ptr] != 0:
-                i = []
+                i = [o for o, c in bracket_map.items() if c == i][0]
         i += 1
 
 
@@ -51,4 +52,4 @@ if __name__ == "__main__":
     # syntactically correct
     source_path = sys.argv[1]
     source = open_and_read(source_path)
-    print source
+    interpret_source(source)
