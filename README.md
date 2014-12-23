@@ -1,6 +1,8 @@
 Brainfuck interpreter
 =====================
-This repository is a collection of brainfuck interpreters in multiple languages
+[![Build Status](https://travis-ci.org/AdrianTeng/brainfuck.svg?branch=master)](https://travis-ci.org/AdrianTeng/brainfuck)
+
+This repository is a collection of brainfuck interpreters in multiple languages.
 
 Brain... fuck?
 --------------
