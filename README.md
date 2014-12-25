@@ -12,3 +12,17 @@ Brain... fuck?
 Testing Methodology
 -------------------
 Each interpreter is tested with helloworld \& [ROT13](http://en.wikipedia.org/wiki/ROT13).
+
+
+Running the interpreter
+-----------------------
+Python:
+Clone the repository and change to the repo's directory.
+
+    python python\brainfuck.py helloworld.bf
+    > hello world!
+
+For rot13 you need to put the message you wish to encrypt as argument:
+
+    python python\brainfuck.py rot13.bf encrypt_this!
+    > rapelcg_guvf!
