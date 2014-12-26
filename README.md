@@ -26,3 +26,9 @@ For rot13 you need to put the message you wish to encrypt as argument:
 
     python python\brainfuck.py rot13.bf encrypt_this!
     > rapelcg_guvf!
+
+C:
+
+    cd c
+    gcc -Wall brainfuck.c -o brainfuck
+    ./brainfuck
