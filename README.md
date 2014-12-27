@@ -16,7 +16,7 @@ Each interpreter is tested with helloworld \& [ROT13](http://en.wikipedia.org/wi
 
 Running the interpreter
 -----------------------
-Python:
+### Python:
 Clone the repository and change to the repo's directory.
 
     python python\brainfuck.py helloworld.bf
@@ -27,8 +27,17 @@ For rot13 you need to put the message you wish to encrypt as argument:
     python python\brainfuck.py rot13.bf encrypt_this!
     > rapelcg_guvf!
 
-C:
+Running tests:
+
+    py.test test.py
+
+### C:
 
     cd c
-    gcc -Wall brainfuck.c -o brainfuck
+    gcc -Wall main.c -o brainfuck -std=c99
     ./brainfuck
+
+Running tests:
+
+    gcc -Wall test.c -o test -std=c99
+    ./test
