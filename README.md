@@ -20,7 +20,7 @@ Running the interpreter
 Clone the repository and change to the repo's directory.
 
     python python\brainfuck.py helloworld.bf
-    > hello world!
+    > Hello World!
 
 For rot13 you need to put the message you wish to encrypt as argument:
 
@@ -33,11 +33,14 @@ Running tests:
 
 ### C:
 
-    cd c
-    gcc -Wall main.c -o brainfuck -std=c99
-    ./brainfuck
+    gcc -Wall c/main.c -o brainfuck
+    ./brainfuck hellowworld.bf
+    > Hello World!
+    ./brainfuck rot13.bd encrypt_this!
+    > rapelcg_guvf!
 
-Running tests:
 
-    gcc -Wall test.c -o test -std=c99
+Running tests: (the tests has no output if all tests passed)
+
+    gcc -Wall c/test.c -o test
     ./test
