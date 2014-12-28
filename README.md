@@ -29,6 +29,7 @@ For rot13 you need to put the message you wish to encrypt as argument:
 
 Running tests:
 
+    cd python
     py.test test.py
 
 ### C:
