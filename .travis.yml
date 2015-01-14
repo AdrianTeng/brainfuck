@@ -8,3 +8,5 @@ script:
     - gcc -Wall c/main.c -o brainfuck
     - gcc -Wall c/test.c -o test
     - ./test
+    - cd java
+    - mvn clean compile test

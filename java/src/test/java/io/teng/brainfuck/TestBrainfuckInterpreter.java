@@ -1,6 +1,5 @@
 package io.teng.brainfuck;
 
-import junit.framework.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -11,7 +10,7 @@ import static org.junit.Assert.*;
 /**
  * Created by ateng on 01/01/15.
  */
-public class testBrainfuckInterpreter {
+public class TestBrainfuckInterpreter {
 
     @Test
     public void testHelloWorld(){
