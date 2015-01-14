@@ -45,3 +45,13 @@ Running tests: (the tests has no output if all tests passed)
 
     gcc -Wall c/test.c -o test
     ./test
+
+
+### Java:
+We use Maven for compiling and running (The -q option is to suppress Maven's own output)
+
+    mvn exec:java -Dexec.mainClass="io.teng.brainfuck.BrainfuckInterpreter" -Dexec.args="../helloworld.bf" -q
+
+Running tests:
+
+    mvn clean compile test
