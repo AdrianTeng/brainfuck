@@ -14,8 +14,7 @@ import static java.nio.file.Files.readAllLines;
 public class BrainfuckInterpreter {
 
     private final String fileName;
-    private final String arg;
-    private Map<Integer, Integer> bracketMap;
+    private String arg;
 
     public BrainfuckInterpreter(String fileName, String arg) {
         this.fileName = fileName;
@@ -70,6 +69,12 @@ public class BrainfuckInterpreter {
                     break;
                 case '.':
                     System.out.printf("%s", (char) heap.get(dataPtr).intValue()); break;
+                case ',':
+                    if (arg.length() > 0) {
+                        heap.set(dataPtr, (int) arg.charAt(0));
+                        arg = arg.substring(1);
+                    }
+                    break;
             }
         }
 
