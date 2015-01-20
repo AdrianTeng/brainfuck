@@ -1,2 +1,9 @@
 **/*.pyc
 **/__pycache__
+
+**/*.o
+**/*.out
+
+**/.idea
+**/*.iml
+**/target
