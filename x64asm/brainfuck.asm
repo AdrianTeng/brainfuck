@@ -1,11 +1,35 @@
+    .section .data
+
+    .equ    O_RDONLY, 0
+    .equ    EOF, 0
+
+
+    .section .bss
+    .equ    BUFFER_SIZE, 1000
+    .lcomm  BUFFER_DATA, BUFFER_SIZE
+
+
     .global _start
-    .text
+    .section .text
 
     # Given a null-terminated string address at %rdi, print the string at stdout
     # and return the length of string
 
 print:
 
+    call    strlen
+
+    mov     %rax, %rdx              # number of bytes
+    mov     %rdi, %rsi              # address of string to output
+    mov     $1, %rax                # system call 1 is write
+    mov     $1, %rdi                # file handle 1 is stdout
+    syscall                         # invoke operating system to do the write
+
+    ret
+
+    # Given a null-terminated string address at %rdi, return the length of the string at %rax
+
+strlen:
     mov     $0, %rax                # rax as counter to find the null at the end of the string
 
 _strlen_loop:
@@ -19,19 +43,41 @@ _strlen_loop:
     jmp     _strlen_loop
 
 _strlen_loop_end:
-
-    mov     %rax, %rdx              # number of bytes
-    mov     %rdi, %rsi              # address of string to output
-    mov     $1, %rax                # system call 1 is write
-    mov     $1, %rdi                # file handle 1 is stdout
-    syscall                         # invoke operating system to do the write
-
     ret
 
+
+    # Given a null-terminated file name address at %rdi, return a pointer?
+
+read_file:
+
+    mov     $2, %rax
+    mov     $O_RDONLY, %rsi
+    mov     $0, %rdx
+    syscall
+
+
+read_loop_begin:
+    mov     %rax, %rdi              # file descripter is in %rax from previous syscall
+    mov     $0, %rax
+    mov     $BUFFER_DATA, %rsi
+    mov     $BUFFER_SIZE, %rdx
+    syscall
+
+    ## cmp     $EOF, $rax
+    ## jg
+
+
+    ret
 
 _start:
 
     mov     16(%rsp), %rdi          # %rsp = argc, then argv for each word
+    call    print
+
+    mov     16(%rsp), %rdi
+    call    read_file
+
+    mov     $BUFFER_DATA, %rdi
     call    print
 
     mov     %rax, %rdi              # string length is pass as exit code
