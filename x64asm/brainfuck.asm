@@ -2,12 +2,19 @@
 
     .equ    O_RDONLY, 0
     .equ    EOF, 0
+    .equ    SEEK_SET, 0
+    .equ    SEEK_END, 2
+
+
+    .equ    SYS_READ, 0
+    .equ    SYS_OPEN, 2
+    .equ    SYS_LSEEK, 8
+    .equ    SYS_BRK, 12
 
 
     .section .bss
     .equ    BUFFER_SIZE, 1000
     .lcomm  BUFFER_DATA, BUFFER_SIZE
-
 
     .global _start
     .section .text
@@ -46,26 +53,54 @@ _strlen_loop_end:
     ret
 
 
-    # Given a null-terminated file name address at %rdi, return a pointer?
+    # Given a null-terminated file name address at %rdi, return an address to copied file content in memory
 
 read_file:
 
-    mov     $2, %rax
+    mov     $SYS_OPEN, %rax
     mov     $O_RDONLY, %rsi
     mov     $0, %rdx
     syscall
 
+    mov     %rax, %r15              # Keep file descripter in %r15
 
-read_loop_begin:
-    mov     %rax, %rdi              # file descripter is in %rax from previous syscall
-    mov     $0, %rax
-    mov     $BUFFER_DATA, %rsi
-    mov     $BUFFER_SIZE, %rdx
+_find_file_size:
+
+    mov     %rax, %rdi
+    mov     $SYS_LSEEK, %rax
+    mov     $0, %rsi
+    mov     $SEEK_END, %rdx
     syscall
 
-    ## cmp     $EOF, $rax
-    ## jg
+    mov     %rax, %r14              # Keep file size in %r14
 
+    mov     $SYS_LSEEK, %rax
+    mov     $0, %rsi
+    mov     $SEEK_SET, %rdx
+    syscall                         # Move the file cursor back to start
+
+_alloc_mem:
+
+    mov     $0, %rdi                # First call of BRK to get address of end of .data
+    mov     $SYS_BRK, %rax
+    syscall
+
+    mov     %r14, %rdi              # File size previously stored in %r14
+    mov     %rax, %r13              # Keep original mem end address in %r13 (soon it will also be starting address of copied file content)
+    add     %rax, %rdi              # Total mem required = old_size + file size
+    mov     $SYS_BRK, %rax          # Second call to do the actual memory allocation
+    syscall
+
+_read_file_content:
+
+    mov     %r15, %rdi              # File descripter previously stored in %r15
+    mov     %r13, %rsi
+    mov     $0, %rax
+    mov     %r14, %rdx
+    syscall
+
+
+    mov     %r13, %rax              # Return address of copied file content
 
     ret
 
@@ -77,7 +112,7 @@ _start:
     mov     16(%rsp), %rdi
     call    read_file
 
-    mov     $BUFFER_DATA, %rdi
+    mov     %rax, %rdi
     call    print
 
     mov     %rax, %rdi              # string length is pass as exit code
