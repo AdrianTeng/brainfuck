@@ -11,16 +11,14 @@
     .equ    SYS_LSEEK, 8
     .equ    SYS_BRK, 12
 
-
-    .section .bss
-    .equ    BUFFER_SIZE, 1000
-    .lcomm  BUFFER_DATA, BUFFER_SIZE
-
     .global _start
     .section .text
 
-    # Given a null-terminated string address at %rdi, print the string at stdout
-    # and return the length of string
+
+    ##############################################################################
+    # Given a null-terminated string address at %rdi, print the string at stdout #
+    # and return the length of string                                            #
+    ##############################################################################
 
 print:
 
@@ -34,7 +32,10 @@ print:
 
     ret
 
-    # Given a null-terminated string address at %rdi, return the length of the string at %rax
+
+    ###########################################################################################
+    # Given a null-terminated string address at %rdi, return the length of the string at %rax #
+    ###########################################################################################
 
 strlen:
     mov     $0, %rax                # rax as counter to find the null at the end of the string
@@ -53,7 +54,10 @@ _strlen_loop_end:
     ret
 
 
-    # Given a null-terminated file name address at %rdi, return an address to copied file content in memory
+
+    #########################################################################################################
+    # Given a null-terminated file name address at %rdi, return an address to copied file content in memory #
+    #########################################################################################################
 
 read_file:
 
@@ -80,28 +84,44 @@ _find_file_size:
     syscall                         # Move the file cursor back to start
 
 _alloc_mem:
+    mov     %r14, %rax
+    call    malloc
 
-    mov     $0, %rdi                # First call of BRK to get address of end of .data
-    mov     $SYS_BRK, %rax
-    syscall
+    push    %rax                    # Keeping allocated memory location in stack to return later
 
-    mov     %r14, %rdi              # File size previously stored in %r14
-    mov     %rax, %r13              # Keep original mem end address in %r13 (soon it will also be starting address of copied file content)
-    add     %rax, %rdi              # Total mem required = old_size + file size
-    mov     $SYS_BRK, %rax          # Second call to do the actual memory allocation
-    syscall
 
 _read_file_content:
 
     mov     %r15, %rdi              # File descripter previously stored in %r15
-    mov     %r13, %rsi
+    mov     %rax, %rsi
     mov     $0, %rax
     mov     %r14, %rdx
     syscall
 
 
-    mov     %r13, %rax              # Return address of copied file content
+    pop     %rax                    # Return address of copied file content
 
+
+    #######################################################################################################
+    # Given an int stored in %rdi, allocate that amount of memory in heap and return the starting address #
+    #######################################################################################################
+
+malloc:
+
+    push    %rdi
+
+    mov     $0, %rdi                # First call of BRK to get address of end of .data
+    mov     $SYS_BRK, %rax
+    syscall
+
+    pop     %rdi
+    push    %rax
+    add     %rax, %rdi              # Total mem required = old_size + file size
+    mov     $SYS_BRK, %rax          # Second call to do the actual memory allocation
+    syscall
+
+    pop     %rax                    # Return original mem end address, which is now the starting
+                                    # address of the allocated memory
     ret
 
 _start:
