@@ -187,6 +187,7 @@ _push_bracket:
 
 _pop_bracket:                       # Given a pair of matched bracket positions (each as 32 bit int), combine
                                     # them as a 64 bits and store in heap (where %r10 is pointing)
+                                    # Due to x64 being little-endian, the pair would be other way around in memory
 
     mov     %eax, %edx              # move the position of ']' into lower 32 bits of %rdx
     pop     %rcx
@@ -204,6 +205,34 @@ _end_build_bracket_map:
     ret
 
 
+interpret:
+
+    push    %rdi
+
+    mov     $150, %rdi
+    call    malloc
+
+    mov     $0, %rax
+
+    mov     $0, %r15
+
+    # %r15 - data pointer, %rax - instruction pointer, %rdi - source
+
+_interpret_loop:
+    mov     %rdi, %rbx              # Use %rbx to address the i-th character (i is stored in %rax)
+    add     %rax, %rbx
+    movzbl  (%rbx), %ebx            # Copy the character we want to %bl and pad with zeros
+    cmp     $43, %rbx               # '+' char
+    je      _plus_char
+    inc     %rax
+    jmp     _strlen_loop
+
+_plus_char:
+
+
+
+
+
 _start:
 
     mov     16(%rsp), %rdi          # %rsp = argc, then argv for each word
@@ -212,7 +241,7 @@ _start:
     mov     16(%rsp), %rdi
     call    read_file
 
-    push    %rax
+    push    %rax                    # File content in heap
 
     mov     %rax, %rdi
     call    print
@@ -220,8 +249,8 @@ _start:
     pop     %rdi
     call    gen_bracket_map
 
-debug:
 
-    mov     %rax, %rdi              # string length is pass as exit code
+
+    mov     %rax, %rdi
     mov     $60, %rax               # system call 60 is exit
     syscall                         # invoke kernel to exit
